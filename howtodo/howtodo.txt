@@ -1,0 +1,19 @@
+Compilar 
+flutter build web --release --base-href="/flutter_wordle/"
+
+Copiar todos os arquivos contidos na pasta WEB para uma nova pasta 'docs' na raiz do projeto.
+
+
+
+
+
+
+***************Como colocar no GITHUB pages***************
+
+flutter build web --release --base-href="/NOME DA PASTA DO PROJETO/"
+git commit -am "Update: web git-pages"
+
+
+Copiar todos os arquivos contidos na pasta WEB para uma nova pasta 'docs' na raiz do projeto.
+
+entrar me settings/pages e em Source colocar o 'master' com a pasta 'docs'.
