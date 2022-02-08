@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wordle/mock.dart';
+import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
 import 'package:flutter_wordle/widget_keyboard.dart';
 
@@ -45,7 +47,9 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       palavra = 'Não encontrado';
     }
-    print('index: ${palavra}');
+    if (kDebugMode) {
+      print('index: $palavra');
+    }
     super.initState();
   }
 
@@ -53,14 +57,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade800,
+        backgroundColor: ThemeApp().backgroundColor,
         title: Center(
             child: Text(
           widget.title,
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: ThemeApp().primaryTextColor),
         )),
       ),
-      backgroundColor: Colors.grey.shade800,
+      backgroundColor: ThemeApp().backgroundColor,
       body: SafeArea(
         child: Center(
           child: FittedBox(

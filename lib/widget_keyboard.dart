@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wordle/mock.dart';
+import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
 
 var indexList = 0;
 List coluna = [];
 String palavra = '';
+bool _finished = false;
 
 class Keyboard extends StatefulWidget {
   final ControlerRowPalavra controler1;
@@ -34,7 +36,7 @@ class Keyboard extends StatefulWidget {
 class _KeyboardState extends State<Keyboard> {
   @override
   void initState() {
-    palavra = widget.palavra;
+    palavra = widget.palavra.toUpperCase();
     super.initState();
   }
 
@@ -122,6 +124,8 @@ class LetraKeyboard extends StatefulWidget {
 }
 
 class _LetraKeyboardState extends State<LetraKeyboard> {
+  Color colorContainer = ThemeApp().keyboardColor;
+  Color colorContainerShadown = ThemeApp().keyboardShadownColor;
   @override
   Widget build(BuildContext context) {
     IconData? icone;
@@ -138,8 +142,6 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
     double? size = icone == null ? 38 : null;
 
     //
-    Color colorContainer = Colors.blueGrey.shade600;
-    Color colorContainerShadown = Colors.blueGrey.shade900;
     //
     return InkResponse(
       // splashColor: Colors.green.shade50,
@@ -171,14 +173,12 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                 goNext = true;
               }
               if (goNext) {
-                String palavradigitada = widget.coluna.sublist(indexInicio, indexInicio + 5).join();
+                String palavradigitada = widget.coluna.sublist(indexInicio, indexInicio + 5).join().toUpperCase();
 
-                print('palavradigitada: $palavradigitada');
-                if (palavra.toUpperCase() == palavradigitada.toUpperCase()) {
-                  print('OK - PALAVRA CORRETA $palavra - $palavradigitada');
-                } else {
-                  var checkPalavra = mockPalavras.firstWhere((element) => element == palavradigitada, orElse: () => -1);
-                  if (checkPalavra == -1) {
+                if (palavra != palavradigitada) {
+                  var checkPalavra =
+                      mockPalavras.firstWhere((element) => element.toUpperCase() == palavradigitada, orElse: () => '-1');
+                  if (checkPalavra == '-1') {
                     goNext = false;
 
                     var snack = SnackBar(
@@ -194,55 +194,130 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(snack);
+                  } else {
+                    // setState(() {
+                    //   colorContainer = ThemeApp().keyboardExistColor;
+                    //   colorContainerShadown = ThemeApp().keyboardExistShadownColor;
+                    // });
                   }
                 }
 
                 //proximo tentativa
                 if (goNext) {
-                  indexList++;
+                  List<Color> colorsPalavra = [
+                    palavradigitada[0] == palavra[0]
+                        ? Colors.green
+                        : palavra.contains(palavradigitada[0])
+                            ? ThemeApp().keyboardExistColor
+                            : ThemeApp().keyboardErrorColor,
+                    palavradigitada[1] == palavra[1]
+                        ? ThemeApp().keyboadSuccessColor
+                        : palavra.contains(palavradigitada[1])
+                            ? ThemeApp().keyboardExistColor
+                            : ThemeApp().keyboardErrorColor,
+                    palavradigitada[2] == palavra[2]
+                        ? ThemeApp().keyboadSuccessColor
+                        : palavra.contains(palavradigitada[2])
+                            ? ThemeApp().keyboardExistColor
+                            : ThemeApp().keyboardErrorColor,
+                    palavradigitada[3] == palavra[3]
+                        ? ThemeApp().keyboadSuccessColor
+                        : palavra.contains(palavradigitada[3])
+                            ? ThemeApp().keyboardExistColor
+                            : ThemeApp().keyboardErrorColor,
+                    palavradigitada[4] == palavra[4]
+                        ? ThemeApp().keyboadSuccessColor
+                        : palavra.contains(palavradigitada[4])
+                            ? ThemeApp().keyboardExistColor
+                            : ThemeApp().keyboardErrorColor,
+                  ];
+                  if (indexList == 0) {
+                    widget.controler1.changeColor(colorsPalavra);
+                  } else if (indexList == 1) {
+                    widget.controler2.changeColor(colorsPalavra);
+                  } else if (indexList == 2) {
+                    widget.controler3.changeColor(colorsPalavra);
+                  } else if (indexList == 3) {
+                    widget.controler4.changeColor(colorsPalavra);
+                  } else if (indexList == 4) {
+                    widget.controler5.changeColor(colorsPalavra);
+                  } else if (indexList == 5) {
+                    widget.controler6.changeColor(colorsPalavra);
+                  }
+                  if (palavra == palavradigitada) {
+                    showDialog<String>(
+                      useSafeArea: true,
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        backgroundColor: Colors.grey.shade800,
+                        // title: const Text('AlertDialog Title'),
+                        content: const Text(
+                          'Você acertou a palavra de hoje!',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        actions: <Widget>[
+                          // TextButton(
+                          //   onPressed: () => Navigator.pop(context, 'Cancel'),
+                          //   child: const Text('Cancel'),
+                          // ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'OK'),
+                            child: const Text(
+                              'OK',
+                              style: TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                    _finished = true;
+                  } else {
+                    //somente avança se não terminou o jogo
+                    indexList++;
+                  }
                 }
-              }
-              // }
-              if (kDebugMode) {
-                print(indexList);
               }
               break;
             }
           case 'Back':
             {
-              setState(() {
-                if (widget.coluna.isNotEmpty) {
-                  if (indexList == 0) {
-                    widget.coluna.removeLast();
-                  } else if (indexList == 1 && widget.coluna.length > 5) {
-                    widget.coluna.removeLast();
-                  } else if (indexList == 2 && widget.coluna.length > 10) {
-                    widget.coluna.removeLast();
-                  } else if (indexList == 3 && widget.coluna.length > 15) {
-                    widget.coluna.removeLast();
-                  } else if (indexList == 4 && widget.coluna.length > 20) {
-                    widget.coluna.removeLast();
-                  } else if (indexList == 5 && widget.coluna.length > 25) {
-                    widget.coluna.removeLast();
+              if (!_finished) {
+                setState(() {
+                  if (widget.coluna.isNotEmpty) {
+                    if (indexList == 0) {
+                      widget.coluna.removeLast();
+                    } else if (indexList == 1 && widget.coluna.length > 5) {
+                      widget.coluna.removeLast();
+                    } else if (indexList == 2 && widget.coluna.length > 10) {
+                      widget.coluna.removeLast();
+                    } else if (indexList == 3 && widget.coluna.length > 15) {
+                      widget.coluna.removeLast();
+                    } else if (indexList == 4 && widget.coluna.length > 20) {
+                      widget.coluna.removeLast();
+                    } else if (indexList == 5 && widget.coluna.length > 25) {
+                      widget.coluna.removeLast();
+                    }
                   }
-                }
-              });
+                });
+              }
               break;
             }
           default:
             {
-              if (indexList == 0 && widget.coluna.length < 5) {
-                widget.coluna.add(widget.letra);
-              } else if (indexList == 1 && widget.coluna.length < 10) {
-                widget.coluna.add(widget.letra);
-              } else if (indexList == 2 && widget.coluna.length < 15) {
-                widget.coluna.add(widget.letra);
-              } else if (indexList == 3 && widget.coluna.length < 20) {
-                widget.coluna.add(widget.letra);
-              } else if (indexList == 4 && widget.coluna.length < 25) {
-                widget.coluna.add(widget.letra);
-              } else if (indexList == 5 && widget.coluna.length < 30) {
-                widget.coluna.add(widget.letra);
+              if (!_finished) {
+                if (indexList == 0 && widget.coluna.length < 5) {
+                  widget.coluna.add(widget.letra);
+                } else if (indexList == 1 && widget.coluna.length < 10) {
+                  widget.coluna.add(widget.letra);
+                } else if (indexList == 2 && widget.coluna.length < 15) {
+                  widget.coluna.add(widget.letra);
+                } else if (indexList == 3 && widget.coluna.length < 20) {
+                  widget.coluna.add(widget.letra);
+                } else if (indexList == 4 && widget.coluna.length < 25) {
+                  widget.coluna.add(widget.letra);
+                } else if (indexList == 5 && widget.coluna.length < 30) {
+                  widget.coluna.add(widget.letra);
+                }
               }
               break;
             }
@@ -273,9 +348,9 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
         if (indexList == 6) {
           widget.controler6.submited = true;
         }
-        if (kDebugMode) {
-          print(widget.coluna);
-        }
+        // if (kDebugMode) {
+        //   print(widget.coluna);
+        // }
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 5),
@@ -308,10 +383,12 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                       ),
                     ),
                   )
-                : Icon(
-                    icone,
-                    color: Colors.white,
-                    size: 30,
+                : FittedBox(
+                    child: Icon(
+                      icone,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                   ),
           ),
         ),

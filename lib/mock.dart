@@ -1,4 +1,4 @@
-List mockPalavras = [
+List<String> mockPalavras = [
   'abaco',
   'abade',
   'abaju',

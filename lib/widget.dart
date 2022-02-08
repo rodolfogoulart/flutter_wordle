@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/theme.dart';
 
 class ControlerRowPalavra extends ChangeNotifier {
   List _palavra = [];
   bool submited = false;
+  List<Color>? _colorsPalavra;
 
   changePalavra(List palavra) {
     if (!submited) {
       _palavra = palavra;
       notifyListeners();
     }
+  }
+
+  changeColor(List<Color> colorsPalavra) {
+    // if (submited) {
+    _colorsPalavra = colorsPalavra;
+    notifyListeners();
+    // }
   }
 }
 
@@ -39,19 +48,26 @@ class _RowPalavraState extends State<RowPalavra> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ContainerPalavra(letra: widget.controler._palavra.isNotEmpty ? widget.controler._palavra[0] : ''),
         ContainerPalavra(
-            letra:
-                widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 1 ? widget.controler._palavra[1] : ''),
+          letra: widget.controler._palavra.isNotEmpty ? widget.controler._palavra[0] : '',
+          colorLetra: widget.controler._colorsPalavra?[0],
+        ),
         ContainerPalavra(
-            letra:
-                widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 2 ? widget.controler._palavra[2] : ''),
+          letra: widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 1 ? widget.controler._palavra[1] : '',
+          colorLetra: widget.controler._colorsPalavra?[1],
+        ),
         ContainerPalavra(
-            letra:
-                widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 3 ? widget.controler._palavra[3] : ''),
+          letra: widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 2 ? widget.controler._palavra[2] : '',
+          colorLetra: widget.controler._colorsPalavra?[2],
+        ),
         ContainerPalavra(
-            letra:
-                widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 4 ? widget.controler._palavra[4] : ''),
+          letra: widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 3 ? widget.controler._palavra[3] : '',
+          colorLetra: widget.controler._colorsPalavra?[3],
+        ),
+        ContainerPalavra(
+          letra: widget.controler._palavra.isNotEmpty && widget.controler._palavra.length > 4 ? widget.controler._palavra[4] : '',
+          colorLetra: widget.controler._colorsPalavra?[4],
+        ),
       ],
     );
   }
@@ -59,9 +75,11 @@ class _RowPalavraState extends State<RowPalavra> {
 
 class ContainerPalavra extends StatefulWidget {
   final String letra;
+  final Color? colorLetra;
   const ContainerPalavra({
     Key? key,
     required this.letra,
+    required this.colorLetra,
   }) : super(key: key);
 
   @override
@@ -83,14 +101,14 @@ class _ContainerPalavraState extends State<ContainerPalavra> {
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: Colors.grey.shade800,
-            border: Border.all(
-              color: Colors.grey.shade800,
-              width: 2.0,
-            ),
+            color: widget.colorLetra ?? ThemeApp().backgroundColor,
+            // border: Border.all(
+            //   color: Colors.grey.shade800,
+            //   width: 2.0,
+            // ),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.shade900,
+                color: ThemeApp().shadownColor,
                 blurRadius: 5.0,
                 spreadRadius: 1.0,
                 offset: const Offset(0.0, 2.0),
@@ -103,9 +121,9 @@ class _ContainerPalavraState extends State<ContainerPalavra> {
                   child: FittedBox(
                     child: Text(
                       widget.letra,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 450,
-                        color: Colors.white,
+                        color: ThemeApp().primaryTextColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
