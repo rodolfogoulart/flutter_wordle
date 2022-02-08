@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/widget.dart';
 import 'package:flutter_wordle/widget_keyboard.dart';
 
@@ -8,6 +9,7 @@ ControlerRowPalavra controler3 = ControlerRowPalavra();
 ControlerRowPalavra controler4 = ControlerRowPalavra();
 ControlerRowPalavra controler5 = ControlerRowPalavra();
 ControlerRowPalavra controler6 = ControlerRowPalavra();
+String palavra = '';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -28,6 +30,23 @@ class _MyHomePageState extends State<MyHomePage> {
     controler4.dispose();
     controler5.dispose();
     controler6.dispose();
+  }
+
+  @override
+  void initState() {
+    var date = DateTime.now().difference(DateTime(2022, 2, 7)).inDays;
+    // print('date: $date');
+    try {
+      if (date > mockPalavras.length) {
+        date = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
+        palavra = mockPalavras[date];
+      }
+      palavra = mockPalavras.elementAt(date);
+    } catch (e) {
+      palavra = 'Não encontrado';
+    }
+    print('index: ${palavra}');
+    super.initState();
   }
 
   @override
@@ -72,7 +91,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       controler3: controler3,
                       controler4: controler4,
                       controler5: controler5,
-                      controler6: controler6),
+                      controler6: controler6,
+                      palavra: palavra),
                 ],
               ),
             ),

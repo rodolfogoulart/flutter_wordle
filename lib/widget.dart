@@ -73,8 +73,6 @@ class _ContainerPalavraState extends State<ContainerPalavra> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size.height * 0.7;
     size = size * 0.13;
-    print('size: $size');
-
     return FittedBox(
       child: Padding(
         padding: const EdgeInsets.only(right: 5, bottom: 10),
@@ -84,8 +82,6 @@ class _ContainerPalavraState extends State<ContainerPalavra> {
           // height: MediaQuery.of(context).size.width * 0.13,
           width: size,
           height: size,
-          // width: 65,
-          // height: 65,
           decoration: BoxDecoration(
             color: Colors.grey.shade800,
             border: Border.all(

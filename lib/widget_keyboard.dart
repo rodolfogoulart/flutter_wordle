@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/widget.dart';
 
 var indexList = 0;
 List coluna = [];
+String palavra = '';
 
 class Keyboard extends StatefulWidget {
   final ControlerRowPalavra controler1;
@@ -12,6 +14,7 @@ class Keyboard extends StatefulWidget {
   final ControlerRowPalavra controler4;
   final ControlerRowPalavra controler5;
   final ControlerRowPalavra controler6;
+  final String palavra;
 
   const Keyboard({
     Key? key,
@@ -21,6 +24,7 @@ class Keyboard extends StatefulWidget {
     required this.controler4,
     required this.controler5,
     required this.controler6,
+    required this.palavra,
   }) : super(key: key);
 
   @override
@@ -28,6 +32,12 @@ class Keyboard extends StatefulWidget {
 }
 
 class _KeyboardState extends State<Keyboard> {
+  @override
+  void initState() {
+    palavra = widget.palavra;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<String> keyboard1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
@@ -136,26 +146,61 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
       // highlightColor: Colors.green.shade100,
       containedInkWell: true,
       onTap: () {
+        int indexInicio = 0;
+        bool goNext = false;
         switch (widget.letra) {
           case 'Enter':
             {
-              // if (indexList < 6) {
-              bool goNext = false;
               if (indexList == 0 && widget.coluna.length > 5 - 1) {
+                indexInicio = 0;
                 goNext = true;
               } else if (indexList == 1 && widget.coluna.length > 10 - 1) {
+                indexInicio = 5;
                 goNext = true;
               } else if (indexList == 2 && widget.coluna.length > 15 - 1) {
+                indexInicio = 10;
                 goNext = true;
               } else if (indexList == 3 && widget.coluna.length > 20 - 1) {
+                indexInicio = 15;
                 goNext = true;
               } else if (indexList == 4 && widget.coluna.length > 25 - 1) {
+                indexInicio = 20;
                 goNext = true;
               } else if (indexList == 5 && widget.coluna.length > 30 - 1) {
+                indexInicio = 25;
                 goNext = true;
               }
               if (goNext) {
-                indexList++;
+                String palavradigitada = widget.coluna.sublist(indexInicio, indexInicio + 5).join();
+
+                print('palavradigitada: $palavradigitada');
+                if (palavra.toUpperCase() == palavradigitada.toUpperCase()) {
+                  print('OK - PALAVRA CORRETA $palavra - $palavradigitada');
+                } else {
+                  var checkPalavra = mockPalavras.firstWhere((element) => element == palavradigitada, orElse: () => -1);
+                  if (checkPalavra == -1) {
+                    goNext = false;
+
+                    var snack = SnackBar(
+                      // backgroundColor: Colors.red,
+                      content: Row(children: const [
+                        Icon(Icons.error_outline, color: Colors.red),
+                        Padding(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Text('Palavra não existe'),
+                        )
+                      ]),
+                      duration: const Duration(milliseconds: 1500),
+                    );
+
+                    ScaffoldMessenger.of(context).showSnackBar(snack);
+                  }
+                }
+
+                //proximo tentativa
+                if (goNext) {
+                  indexList++;
+                }
               }
               // }
               if (kDebugMode) {
