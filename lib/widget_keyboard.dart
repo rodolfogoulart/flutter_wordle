@@ -4,12 +4,12 @@ import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
 
-var indexList = 0;
-List coluna = [];
-String palavra = '';
+var _indexList = 0;
+List _coluna = [];
+String _palavra = '';
 bool _finished = false;
 
-class Keyboard extends StatefulWidget {
+class Keyboard extends StatelessWidget {
   final ControlerRowPalavra controler1;
   final ControlerRowPalavra controler2;
   final ControlerRowPalavra controler3;
@@ -18,7 +18,7 @@ class Keyboard extends StatefulWidget {
   final ControlerRowPalavra controler6;
   final String palavra;
 
-  const Keyboard({
+  Keyboard({
     Key? key,
     required this.controler1,
     required this.controler2,
@@ -27,18 +27,20 @@ class Keyboard extends StatefulWidget {
     required this.controler5,
     required this.controler6,
     required this.palavra,
-  }) : super(key: key);
-
-  @override
-  State<Keyboard> createState() => _KeyboardState();
-}
-
-class _KeyboardState extends State<Keyboard> {
-  @override
-  void initState() {
-    palavra = widget.palavra.toUpperCase();
-    super.initState();
+  }) : super(key: key) {
+    _palavra = palavra.toUpperCase();
   }
+
+//   @override
+//   State<Keyboard> createState() => _KeyboardState();
+// }
+
+// class _KeyboardState extends State<Keyboard> {
+  // @override
+  // void initState() {
+  //   palavra = palavra.toUpperCase();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +55,13 @@ class _KeyboardState extends State<Keyboard> {
           children: keyboard1.map((e) {
             return LetraKeyboard(
                 letra: e,
-                coluna: coluna,
-                controler1: widget.controler1,
-                controler2: widget.controler2,
-                controler3: widget.controler3,
-                controler4: widget.controler4,
-                controler5: widget.controler5,
-                controler6: widget.controler6);
+                coluna: _coluna,
+                controler1: controler1,
+                controler2: controler2,
+                controler3: controler3,
+                controler4: controler4,
+                controler5: controler5,
+                controler6: controler6);
           }).toList(),
         ),
         const SizedBox(height: 10),
@@ -68,13 +70,13 @@ class _KeyboardState extends State<Keyboard> {
           children: keyboard2.map((e) {
             return LetraKeyboard(
                 letra: e,
-                coluna: coluna,
-                controler1: widget.controler1,
-                controler2: widget.controler2,
-                controler3: widget.controler3,
-                controler4: widget.controler4,
-                controler5: widget.controler5,
-                controler6: widget.controler6);
+                coluna: _coluna,
+                controler1: controler1,
+                controler2: controler2,
+                controler3: controler3,
+                controler4: controler4,
+                controler5: controler5,
+                controler6: controler6);
           }).toList(),
         ),
         const SizedBox(height: 10),
@@ -83,13 +85,13 @@ class _KeyboardState extends State<Keyboard> {
           children: keyboard3.map((e) {
             return LetraKeyboard(
                 letra: e,
-                coluna: coluna,
-                controler1: widget.controler1,
-                controler2: widget.controler2,
-                controler3: widget.controler3,
-                controler4: widget.controler4,
-                controler5: widget.controler5,
-                controler6: widget.controler6);
+                coluna: _coluna,
+                controler1: controler1,
+                controler2: controler2,
+                controler3: controler3,
+                controler4: controler4,
+                controler5: controler5,
+                controler6: controler6);
           }).toList(),
         ),
       ],
@@ -143,39 +145,39 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
 
     //
     //
-    return InkResponse(
+    return GestureDetector(
       // splashColor: Colors.green.shade50,
       // highlightColor: Colors.green.shade100,
-      containedInkWell: true,
+      // containedInkWell: true,
       onTap: () {
         int indexInicio = 0;
         bool goNext = false;
         switch (widget.letra) {
           case 'Enter':
             {
-              if (indexList == 0 && widget.coluna.length > 5 - 1) {
+              if (_indexList == 0 && widget.coluna.length > 5 - 1) {
                 indexInicio = 0;
                 goNext = true;
-              } else if (indexList == 1 && widget.coluna.length > 10 - 1) {
+              } else if (_indexList == 1 && widget.coluna.length > 10 - 1) {
                 indexInicio = 5;
                 goNext = true;
-              } else if (indexList == 2 && widget.coluna.length > 15 - 1) {
+              } else if (_indexList == 2 && widget.coluna.length > 15 - 1) {
                 indexInicio = 10;
                 goNext = true;
-              } else if (indexList == 3 && widget.coluna.length > 20 - 1) {
+              } else if (_indexList == 3 && widget.coluna.length > 20 - 1) {
                 indexInicio = 15;
                 goNext = true;
-              } else if (indexList == 4 && widget.coluna.length > 25 - 1) {
+              } else if (_indexList == 4 && widget.coluna.length > 25 - 1) {
                 indexInicio = 20;
                 goNext = true;
-              } else if (indexList == 5 && widget.coluna.length > 30 - 1) {
+              } else if (_indexList == 5 && widget.coluna.length > 30 - 1) {
                 indexInicio = 25;
                 goNext = true;
               }
               if (goNext) {
                 String palavradigitada = widget.coluna.sublist(indexInicio, indexInicio + 5).join().toUpperCase();
 
-                if (palavra != palavradigitada) {
+                if (_palavra != palavradigitada) {
                   var checkPalavra =
                       mockPalavras.firstWhere((element) => element.toUpperCase() == palavradigitada, orElse: () => '-1');
                   if (checkPalavra == '-1') {
@@ -205,46 +207,46 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                 //proximo tentativa
                 if (goNext) {
                   List<Color> colorsPalavra = [
-                    palavradigitada[0] == palavra[0]
+                    palavradigitada[0] == _palavra[0]
                         ? Colors.green
-                        : palavra.contains(palavradigitada[0])
+                        : _palavra.contains(palavradigitada[0])
                             ? ThemeApp().keyboardExistColor
                             : ThemeApp().keyboardErrorColor,
-                    palavradigitada[1] == palavra[1]
+                    palavradigitada[1] == _palavra[1]
                         ? ThemeApp().keyboadSuccessColor
-                        : palavra.contains(palavradigitada[1])
+                        : _palavra.contains(palavradigitada[1])
                             ? ThemeApp().keyboardExistColor
                             : ThemeApp().keyboardErrorColor,
-                    palavradigitada[2] == palavra[2]
+                    palavradigitada[2] == _palavra[2]
                         ? ThemeApp().keyboadSuccessColor
-                        : palavra.contains(palavradigitada[2])
+                        : _palavra.contains(palavradigitada[2])
                             ? ThemeApp().keyboardExistColor
                             : ThemeApp().keyboardErrorColor,
-                    palavradigitada[3] == palavra[3]
+                    palavradigitada[3] == _palavra[3]
                         ? ThemeApp().keyboadSuccessColor
-                        : palavra.contains(palavradigitada[3])
+                        : _palavra.contains(palavradigitada[3])
                             ? ThemeApp().keyboardExistColor
                             : ThemeApp().keyboardErrorColor,
-                    palavradigitada[4] == palavra[4]
+                    palavradigitada[4] == _palavra[4]
                         ? ThemeApp().keyboadSuccessColor
-                        : palavra.contains(palavradigitada[4])
+                        : _palavra.contains(palavradigitada[4])
                             ? ThemeApp().keyboardExistColor
                             : ThemeApp().keyboardErrorColor,
                   ];
-                  if (indexList == 0) {
+                  if (_indexList == 0) {
                     widget.controler1.changeColor(colorsPalavra);
-                  } else if (indexList == 1) {
+                  } else if (_indexList == 1) {
                     widget.controler2.changeColor(colorsPalavra);
-                  } else if (indexList == 2) {
+                  } else if (_indexList == 2) {
                     widget.controler3.changeColor(colorsPalavra);
-                  } else if (indexList == 3) {
+                  } else if (_indexList == 3) {
                     widget.controler4.changeColor(colorsPalavra);
-                  } else if (indexList == 4) {
+                  } else if (_indexList == 4) {
                     widget.controler5.changeColor(colorsPalavra);
-                  } else if (indexList == 5) {
+                  } else if (_indexList == 5) {
                     widget.controler6.changeColor(colorsPalavra);
                   }
-                  if (palavra == palavradigitada) {
+                  if (_palavra == palavradigitada) {
                     showDialog<String>(
                       useSafeArea: true,
                       context: context,
@@ -273,7 +275,7 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                     _finished = true;
                   } else {
                     //somente avança se não terminou o jogo
-                    indexList++;
+                    _indexList++;
                   }
                 }
               }
@@ -282,70 +284,70 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
           case 'Back':
             {
               if (!_finished) {
-                setState(() {
-                  if (widget.coluna.isNotEmpty) {
-                    if (indexList == 0) {
-                      widget.coluna.removeLast();
-                    } else if (indexList == 1 && widget.coluna.length > 5) {
-                      widget.coluna.removeLast();
-                    } else if (indexList == 2 && widget.coluna.length > 10) {
-                      widget.coluna.removeLast();
-                    } else if (indexList == 3 && widget.coluna.length > 15) {
-                      widget.coluna.removeLast();
-                    } else if (indexList == 4 && widget.coluna.length > 20) {
-                      widget.coluna.removeLast();
-                    } else if (indexList == 5 && widget.coluna.length > 25) {
-                      widget.coluna.removeLast();
-                    }
+                // setState(() {
+                if (widget.coluna.isNotEmpty) {
+                  if (_indexList == 0) {
+                    widget.coluna.removeLast();
+                  } else if (_indexList == 1 && widget.coluna.length > 5) {
+                    widget.coluna.removeLast();
+                  } else if (_indexList == 2 && widget.coluna.length > 10) {
+                    widget.coluna.removeLast();
+                  } else if (_indexList == 3 && widget.coluna.length > 15) {
+                    widget.coluna.removeLast();
+                  } else if (_indexList == 4 && widget.coluna.length > 20) {
+                    widget.coluna.removeLast();
+                  } else if (_indexList == 5 && widget.coluna.length > 25) {
+                    widget.coluna.removeLast();
                   }
-                });
+                }
+                // });
               }
               break;
             }
           default:
             {
               if (!_finished) {
-                if (indexList == 0 && widget.coluna.length < 5) {
+                if (_indexList == 0 && widget.coluna.length < 5) {
                   widget.coluna.add(widget.letra);
-                } else if (indexList == 1 && widget.coluna.length < 10) {
+                } else if (_indexList == 1 && widget.coluna.length < 10) {
                   widget.coluna.add(widget.letra);
-                } else if (indexList == 2 && widget.coluna.length < 15) {
+                } else if (_indexList == 2 && widget.coluna.length < 15) {
                   widget.coluna.add(widget.letra);
-                } else if (indexList == 3 && widget.coluna.length < 20) {
+                } else if (_indexList == 3 && widget.coluna.length < 20) {
                   widget.coluna.add(widget.letra);
-                } else if (indexList == 4 && widget.coluna.length < 25) {
+                } else if (_indexList == 4 && widget.coluna.length < 25) {
                   widget.coluna.add(widget.letra);
-                } else if (indexList == 5 && widget.coluna.length < 30) {
+                } else if (_indexList == 5 && widget.coluna.length < 30) {
                   widget.coluna.add(widget.letra);
                 }
               }
               break;
             }
         }
-        if (indexList == 0) {
+        if (_indexList == 0) {
           widget.controler1.changePalavra(widget.coluna.sublist(0));
         }
-        if (indexList == 1) {
+        if (_indexList == 1) {
           widget.controler1.submited = true;
           widget.controler2.changePalavra(widget.coluna.sublist(5));
         }
-        if (indexList == 2) {
+        if (_indexList == 2) {
           widget.controler2.submited = true;
           widget.controler3.changePalavra(widget.coluna.sublist(10));
         }
-        if (indexList == 3) {
+        if (_indexList == 3) {
           widget.controler3.submited = true;
           widget.controler4.changePalavra(widget.coluna.sublist(15));
         }
-        if (indexList == 4) {
+        if (_indexList == 4) {
           widget.controler4.submited = true;
           widget.controler5.changePalavra(widget.coluna.sublist(20));
         }
-        if (indexList == 5) {
+        if (_indexList == 5) {
           widget.controler5.submited = true;
           widget.controler6.changePalavra(widget.coluna.sublist(25));
         }
-        if (indexList == 6) {
+        if (_indexList == 6) {
           widget.controler6.submited = true;
         }
         // if (kDebugMode) {
