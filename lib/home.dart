@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
@@ -47,9 +47,9 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       palavra = 'Não encontrado';
     }
-    if (kDebugMode) {
-      print('index: $palavra');
-    }
+    // if (kDebugMode) {
+    //   print('index: $palavra');
+    // }
     super.initState();
   }
 
