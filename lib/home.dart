@@ -1,5 +1,6 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/http.request.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
@@ -47,13 +48,14 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       palavra = 'Não encontrado';
     }
+
     // if (kDebugMode) {
     //   print('index: $palavra');
     // }
     super.initState();
 
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {});
+    Future.delayed(const Duration(seconds: 1), () {
+      // setState(() {});
       showHelp();
     });
   }
@@ -80,6 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: TextStyle(color: ThemeApp().primaryTextColor),
                   ),
                 )),
+            // Flexible(
+            //   child: IconButton(
+            //       onPressed: () {
+            //         getHttp(palavra);
+            //       },
+            //       icon: Icon(Icons.help_outline, color: ThemeApp().primaryTextColor)),
+            // ),
           ],
         ),
       ),
@@ -136,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
               color: ThemeApp().primaryTextColor,
             )),
         content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RichText(
               textAlign: TextAlign.justify,
@@ -151,8 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ]),
             ),
-            SizedBox(height: 10),
-            Divider(),
+            const SizedBox(height: 10),
+            const Divider(),
             Row(
               children: [
                 SizedBox(

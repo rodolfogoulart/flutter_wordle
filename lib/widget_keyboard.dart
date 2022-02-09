@@ -1,5 +1,7 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wordle/http.request.dart';
+// import 'package:flutter_wordle/http.request.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
@@ -8,6 +10,7 @@ var _indexList = 0;
 List _coluna = [];
 String _palavra = '';
 bool _finished = false;
+List<Dicionario> significadoPalavra = [];
 
 class Keyboard extends StatelessWidget {
   final ControlerRowPalavra controler1;
@@ -29,6 +32,7 @@ class Keyboard extends StatelessWidget {
     required this.palavra,
   }) : super(key: key) {
     _palavra = palavra.toUpperCase();
+    getSignificado();
   }
 
 //   @override
@@ -96,6 +100,10 @@ class Keyboard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void getSignificado() async {
+    significadoPalavra = await getHttp(palavra);
   }
 }
 
@@ -246,30 +254,109 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                   }
                   if (_palavra == palavradigitada) {
                     showDialog<String>(
-                      useSafeArea: true,
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                        backgroundColor: Colors.grey.shade800,
-                        // title: const Text('AlertDialog Title'),
-                        content: const Text(
-                          'Você acertou a palavra de hoje!',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        actions: <Widget>[
-                          // TextButton(
-                          //   onPressed: () => Navigator.pop(context, 'Cancel'),
-                          //   child: const Text('Cancel'),
-                          // ),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'OK'),
-                            child: const Text(
-                              'OK',
-                              style: TextStyle(color: Colors.white, fontSize: 20),
+                        useSafeArea: true,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.grey.shade800,
+                            // title: const Text('AlertDialog Title'),
+                            content: Column(
+                              // ignore: prefer_const_literals_to_create_immutables
+                              children: [
+                                // const Text(
+                                //   'Você acertou a palavra de hoje!',
+                                //   style: TextStyle(color: Colors.white, fontSize: 20),
+                                // ),
+                                if (_indexList == 0)
+                                  const Text(
+                                    'Você é um GÊNIO, acertou de primeira!',
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                if (_indexList == 1)
+                                  const Text(
+                                    'Uau você foi incrível, acertou na segunda tentativa!',
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                if (_indexList == 2)
+                                  const Text(
+                                    'Uau você foi muito bem, acertou na terceira tentativa!',
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                if (_indexList == 3)
+                                  const Text(
+                                    'Muito bom, acertou na quarta tentativa!',
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                if (_indexList == 4)
+                                  const Text(
+                                    'Passou rastando eim rs, acertou na quarta tetantiva!',
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                if (_indexList == 5)
+                                  const Text(
+                                    'Nossa quase não acreditava que você iria acertar, mas parabéns!\n Amanhã tente seu melhor',
+                                    style: TextStyle(color: Colors.white, fontSize: 20),
+                                  ),
+                                if (significadoPalavra.isNotEmpty) const SizedBox(height: 30),
+                                if (significadoPalavra.isNotEmpty)
+                                  Text('Gostaria de saber o significado da palavra de hoje?',
+                                      style: TextStyle(color: ThemeApp().primaryTextColor, fontSize: 15)),
+                                if (significadoPalavra.isNotEmpty)
+                                  TextButton(
+                                    onPressed: () => {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return AlertDialog(
+                                              backgroundColor: Colors.grey.shade800,
+                                              actions: [
+                                                TextButton(
+                                                  child: const Text('Fechar'),
+                                                  onPressed: () => Navigator.pop(context),
+                                                )
+                                              ],
+                                              title: Text(
+                                                'Significado da palavra (${_palavra.toUpperCase()})',
+                                                style: const TextStyle(color: Colors.white),
+                                              ),
+                                              content: Column(
+                                                children: significadoPalavra
+                                                    .map((e) => Text(
+                                                          e.meanings!.join('\n'),
+                                                          style: TextStyle(color: ThemeApp().primaryTextColor),
+                                                        ))
+                                                    .toList(),
+                                              ),
+                                            );
+                                          })
+                                    },
+                                    child: Text(
+                                      'Ver significado',
+                                      style: TextStyle(
+                                        color: ThemeApp().primaryTextColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    );
+                            actions: <Widget>[
+                              // TextButton(
+                              //   onPressed: () => Navigator.pop(context, 'Cancel'),
+                              //   child: const Text('Cancel'),
+                              // ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text(
+                                  'OK',
+                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                ),
+                              ),
+                            ],
+                          );
+                        });
                     _finished = true;
                   } else {
                     //somente avança se não terminou o jogo
