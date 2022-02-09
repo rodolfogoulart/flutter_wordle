@@ -259,14 +259,9 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             backgroundColor: Colors.grey.shade800,
-                            // title: const Text('AlertDialog Title'),
                             content: Column(
                               // ignore: prefer_const_literals_to_create_immutables
                               children: [
-                                // const Text(
-                                //   'Você acertou a palavra de hoje!',
-                                //   style: TextStyle(color: Colors.white, fontSize: 20),
-                                // ),
                                 if (_indexList == 0)
                                   const Text(
                                     'Você é um GÊNIO, acertou de primeira!',
@@ -320,6 +315,7 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                                                 style: const TextStyle(color: Colors.white),
                                               ),
                                               content: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: significadoPalavra
                                                     .map((e) => Text(
                                                           e.meanings!.join('\n'),
