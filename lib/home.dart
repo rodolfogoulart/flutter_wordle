@@ -51,6 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print('index: $palavra');
     // }
     super.initState();
+    setState(() {
+      //
+    });
   }
 
   @override
