@@ -5,6 +5,7 @@ import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
 import 'package:flutter_wordle/widget_keyboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 ControlerRowPalavra controler1 = ControlerRowPalavra();
 ControlerRowPalavra controler2 = ControlerRowPalavra();
@@ -53,6 +54,8 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print('index: $palavra');
     // }
     super.initState();
+
+    getPreference();
 
     Future.delayed(const Duration(seconds: 1), () {
       // setState(() {});
@@ -243,5 +246,17 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     );
+  }
+
+  Future<void> getPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    var dias_jogados = prefs.getInt('dias_jogados') ?? 0;
+    var jogo_finalizado_hoje = prefs.getBool('jogo_finalizado_hoje') ?? false;
+    print(dias_jogados);
+    print(jogo_finalizado_hoje);
+    //
+    await prefs.setInt('dias_jogados', dias_jogados);
+    await prefs.setBool('jogo_finalizado_hoje', jogo_finalizado_hoje);
+    // await prefs.set
   }
 }
