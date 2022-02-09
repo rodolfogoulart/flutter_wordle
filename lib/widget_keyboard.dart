@@ -142,8 +142,6 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
         icone = null;
     }
     double? size = icone == null ? 38 : null;
-
-    //
     //
     return GestureDetector(
       // splashColor: Colors.green.shade50,

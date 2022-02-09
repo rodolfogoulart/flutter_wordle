@@ -51,8 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
     //   print('index: $palavra');
     // }
     super.initState();
-    setState(() {
-      //
+
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {});
+      showHelp();
     });
   }
 
@@ -123,25 +125,104 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void showHelp() {
-    showDialog<String>(
+  Future showHelp() {
+    return showDialog<String>(
       useSafeArea: true,
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        backgroundColor: Colors.grey.shade800,
-        title: const Text('Regras do Jogo'),
-        content: const Text(
-          'Advinha a Palavra do Dia em 6 tentativas.\n' +
-              'Adaptação para Português do Wordle de Josh Wardle.\n' +
-              'Cada tentativa tem de ser uma palavra de 5 letras. Usa o botão Enter ↵ para submeter.\n' +
-              'Depois de cada tentativa, a cor dos quadrados mudará para mostrar quão perto estás da solução.!',
-          style: TextStyle(color: Colors.white),
+        backgroundColor: ThemeApp().backgroundColor,
+        title: Text('Regras do Jogo',
+            style: TextStyle(
+              color: ThemeApp().primaryTextColor,
+            )),
+        content: Column(
+          children: [
+            RichText(
+              textAlign: TextAlign.justify,
+              text: TextSpan(children: [
+                TextSpan(
+                  text: 'Tente advinhar palavra do dia em 6 tentativas.\n' +
+                      'Adaptação para Português do Wordle de Josh Wardle.\n' +
+                      'Cada tentativa tem de ser uma palavra de 5 letras. Use o botão Enter ↵ para submeter.\n' +
+                      'Depois de cada tentativa, a cor dos quadrados mudará para mostrar quão perto você esta da solução.!',
+                  style: TextStyle(
+                    color: ThemeApp().primaryTextColor,
+                  ),
+                ),
+              ]),
+            ),
+            SizedBox(height: 10),
+            Divider(),
+            Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ContainerPalavra(
+                    colorLetra: ThemeApp().keyboadSuccessColor,
+                    letra: 'A',
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text(
+                    'VERDE -> Indica que a letra esta no lugar certo.',
+                    style: TextStyle(
+                      color: ThemeApp().keyboadSuccessColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ContainerPalavra(
+                    colorLetra: ThemeApp().keyboadSuccessColor,
+                    letra: 'S',
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text(
+                    'AMARELO -> Indica que a letra esta no lugar errado.',
+                    style: TextStyle(
+                      color: ThemeApp().keyboardExistColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    softWrap: true,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: ContainerPalavra(
+                    colorLetra: ThemeApp().keyboadSuccessColor,
+                    letra: 'D',
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  child: Text(
+                    'VERMELHO -> Indica que a letra não existe na palavra.',
+                    style: TextStyle(
+                      color: ThemeApp().keyboardErrorColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         actions: <Widget>[
-          // TextButton(
-          //   onPressed: () => Navigator.pop(context, 'Cancel'),
-          //   child: const Text('Cancel'),
-          // ),
           TextButton(
             onPressed: () => Navigator.pop(context, 'OK'),
             child: const Text(
