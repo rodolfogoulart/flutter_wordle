@@ -1,11 +1,10 @@
-// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_wordle/http.request.dart';
+import 'package:flutter_wordle/local.data.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
 import 'package:flutter_wordle/widget_keyboard.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 ControlerRowPalavra controler1 = ControlerRowPalavra();
 ControlerRowPalavra controler2 = ControlerRowPalavra();
@@ -49,16 +48,11 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       palavra = 'Não encontrado';
     }
-
-    // if (kDebugMode) {
-    //   print('index: $palavra');
-    // }
     super.initState();
 
     getPreference();
 
     Future.delayed(const Duration(seconds: 1), () {
-      // setState(() {});
       showHelp();
     });
   }
@@ -69,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: ThemeApp().backgroundColor,
         leading: IconButton(
+            tooltip: 'Ajuda',
             onPressed: () {
               showHelp();
             },
@@ -77,6 +72,14 @@ class _MyHomePageState extends State<MyHomePage> {
           widget.title,
           style: TextStyle(color: ThemeApp().primaryTextColor),
         ),
+        actions: [
+          IconButton(
+              tooltip: 'Estatísticas',
+              onPressed: () {
+                showStatistics();
+              },
+              icon: Icon(Icons.stacked_bar_chart, color: ThemeApp().primaryTextColor)),
+        ],
       ),
       backgroundColor: ThemeApp().backgroundColor,
       body: SafeArea(
@@ -137,9 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
               textAlign: TextAlign.justify,
               text: TextSpan(children: [
                 TextSpan(
-                  text: 'Tente advinhar palavra do dia em 6 tentativas.\n' +
-                      'Adaptação para Português do Wordle de Josh Wardle.\n' +
-                      'Cada tentativa tem de ser uma palavra de 5 letras. Use o botão Enter ↵ para submeter.\n' +
+                  text: 'Tente advinhar palavra do dia em 6 tentativas.\n'
+                      'Cada tentativa tem de ser uma palavra de 5 letras. Use o botão Enter ↵ para submeter.\n'
                       'Depois de cada tentativa, a cor dos quadrados mudará para mostrar quão perto você esta da solução.!',
                   style: TextStyle(
                     color: ThemeApp().primaryTextColor,
@@ -148,7 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ]),
             ),
             const SizedBox(height: 10),
-            const Divider(),
             Row(
               children: [
                 SizedBox(
@@ -178,7 +179,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 50,
                   height: 50,
                   child: ContainerPalavra(
-                    colorLetra: ThemeApp().keyboadSuccessColor,
+                    colorLetra: ThemeApp().keyboardExistColor,
                     letra: 'S',
                     animating: false,
                   ),
@@ -202,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 50,
                   height: 50,
                   child: ContainerPalavra(
-                    colorLetra: ThemeApp().keyboadSuccessColor,
+                    colorLetra: ThemeApp().keyboardErrorColor,
                     letra: 'D',
                     animating: false,
                   ),
@@ -219,6 +220,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
+            Divider(color: ThemeApp().shadownColor),
+            Text(
+              '* Use letra C para Ç\n'
+              '* Fique atento, as palavras do desafio do dia podem possuir acento, mas o jogo desconsidera acento para melhor jogabilidade.\n'
+              '\nEsta é uma adaptação para Português do Wordle de Josh Wardle.\n',
+              style: TextStyle(
+                color: ThemeApp().primaryTextColor,
+              ),
+              textAlign: TextAlign.justify,
+            ),
           ],
         ),
         actions: <Widget>[
@@ -234,15 +246,56 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> getPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-    var dias_jogados = prefs.getInt('dias_jogados') ?? 0;
-    var jogo_finalizado_hoje = prefs.getBool('jogo_finalizado_hoje') ?? false;
-    // print(dias_jogados);
-    // print(jogo_finalizado_hoje);
-    //
-    await prefs.setInt('dias_jogados', dias_jogados);
-    await prefs.setBool('jogo_finalizado_hoje', jogo_finalizado_hoje);
-    // await prefs.set
+  // Future<void> getPreference() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   var dias_jogados = prefs.getInt('dias_jogados') ?? 0;
+  //   var jogo_finalizado_hoje = prefs.getBool('jogo_finalizado_hoje') ?? false;
+  //   var ultimo_dia_jogado = DateTime.tryParse(prefs.getString('ultimo_dia_jogado') ?? DateTime.now().toIso8601String());
+  //   //
+  //   String formattedDate = DateFormat('dd-MM-yyyy').format(ultimo_dia_jogado!);
+  //   _ultimoDiaJogado = formattedDate;
+
+  //   _diasJogados = dias_jogados;
+  //   if (formattedDate != DateFormat('dd-MM-yyyy').format(DateTime.now())) {
+  //     dias_jogados++;
+  //     jogo_finalizado_hoje = false;
+  //     ultimo_dia_jogado = DateTime.now();
+  //   }
+  //   //
+  //   await prefs.setString('ultimo_dia_jogado', ultimo_dia_jogado.toIso8601String());
+  //   await prefs.setInt('dias_jogados', dias_jogados);
+  //   await prefs.setBool('jogo_finalizado_hoje', jogo_finalizado_hoje);
+  // }
+
+  Future showStatistics() async {
+    List<String> frases = getGameData();
+
+    return showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            title: Text('Estatísticas do Jogo', style: TextStyle(color: ThemeApp().primaryTextColor)),
+            backgroundColor: ThemeApp().backgroundColor,
+            actions: [
+              TextButton(
+                child: Text('Fechar', style: TextStyle(color: ThemeApp().primaryTextColor)),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: frases
+                  .map((e) => Text(e, style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left))
+                  .toList(),
+              // children: [
+              //   Text('Dias jogados: $diasJogados',
+              //       style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left),
+              //   Text('Último dia jogado: $ultimoDiaJogado',
+              //       style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left),
+              // ],
+            ),
+          );
+        });
   }
 }

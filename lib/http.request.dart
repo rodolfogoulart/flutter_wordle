@@ -11,7 +11,6 @@ Future<List<Dicionario>> getHttp(String palavra) async {
 
     var significados = decodedResponse.map((e) => Dicionario.fromJson(e)).toList();
     // var dicio = Dicionario.fromJson(decodedResponse.first);
-    // print(dicio.meanings);
     return significados;
   } else {
     return [];

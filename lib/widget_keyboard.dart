@@ -1,7 +1,7 @@
-// import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wordle/http.request.dart';
-// import 'package:flutter_wordle/http.request.dart';
+import 'package:flutter_wordle/local.data.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
@@ -11,6 +11,9 @@ List _coluna = [];
 String _palavra = '';
 bool _finished = false;
 List<Dicionario> significadoPalavra = [];
+
+int _letrasCorretas = 0;
+int _letrasExistentes = 0;
 
 class Keyboard extends StatelessWidget {
   final ControlerRowPalavra controler1;
@@ -49,7 +52,7 @@ class Keyboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> keyboard1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
-    List<String> keyboard2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Ç'];
+    List<String> keyboard2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L' /*, 'Ç'*/];
     List<String> keyboard3 = ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Back'];
 
     return Column(
@@ -190,7 +193,6 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                     goNext = false;
 
                     var snack = SnackBar(
-                      // backgroundColor: Colors.red,
                       content: Row(children: const [
                         Icon(Icons.error_outline, color: Colors.red),
                         Padding(
@@ -202,43 +204,45 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                     );
 
                     ScaffoldMessenger.of(context).showSnackBar(snack);
-                  } else {
-                    // setState(() {
-                    //   colorContainer = ThemeApp().keyboardExistColor;
-                    //   colorContainerShadown = ThemeApp().keyboardExistShadownColor;
-                    // });
                   }
                 }
 
                 //proximo tentativa
                 if (goNext) {
-                  List<Color> colorsPalavra = [
-                    palavradigitada[0] == _palavra[0]
-                        ? Colors.green
-                        : _palavra.contains(palavradigitada[0])
-                            ? ThemeApp().keyboardExistColor
-                            : ThemeApp().keyboardErrorColor,
-                    palavradigitada[1] == _palavra[1]
-                        ? ThemeApp().keyboadSuccessColor
-                        : _palavra.contains(palavradigitada[1])
-                            ? ThemeApp().keyboardExistColor
-                            : ThemeApp().keyboardErrorColor,
-                    palavradigitada[2] == _palavra[2]
-                        ? ThemeApp().keyboadSuccessColor
-                        : _palavra.contains(palavradigitada[2])
-                            ? ThemeApp().keyboardExistColor
-                            : ThemeApp().keyboardErrorColor,
-                    palavradigitada[3] == _palavra[3]
-                        ? ThemeApp().keyboadSuccessColor
-                        : _palavra.contains(palavradigitada[3])
-                            ? ThemeApp().keyboardExistColor
-                            : ThemeApp().keyboardErrorColor,
-                    palavradigitada[4] == _palavra[4]
-                        ? ThemeApp().keyboadSuccessColor
-                        : _palavra.contains(palavradigitada[4])
-                            ? ThemeApp().keyboardExistColor
-                            : ThemeApp().keyboardErrorColor,
-                  ];
+                  List<Color> colorsPalavra = [];
+
+                  for (int i = 0; i < 5; i++) {
+                    Color cor;
+
+                    if (palavradigitada[i] == _palavra[i]) {
+                      cor = ThemeApp().keyboadSuccessColor;
+                      _letrasCorretas++;
+                    } else if (!_palavra.contains(palavradigitada[i])) {
+                      cor = ThemeApp().keyboardErrorColor;
+                    } else {
+                      int numOcorrencias = 0;
+                      var letra = palavradigitada[i];
+                      _palavra.characters.forEach((element) {
+                        if (element == letra) {
+                          numOcorrencias++;
+                        }
+                      });
+
+                      palavradigitada.substring(0, i).characters.forEach((element) {
+                        if (element == letra) {
+                          numOcorrencias--;
+                        }
+                      });
+                      if (numOcorrencias > 0) {
+                        _letrasExistentes++;
+                        cor = ThemeApp().keyboardExistColor;
+                      } else {
+                        cor = ThemeApp().keyboardErrorColor;
+                      }
+                    }
+
+                    colorsPalavra.add(cor);
+                  }
                   if (_indexList == 0) {
                     widget.controler1.changeColor(colorsPalavra);
                   } else if (_indexList == 1) {
@@ -253,106 +257,7 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                     widget.controler6.changeColor(colorsPalavra);
                   }
                   if (_palavra == palavradigitada) {
-                    showDialog<String>(
-                        useSafeArea: true,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: Colors.grey.shade800,
-                            content: Column(
-                              // ignore: prefer_const_literals_to_create_immutables
-                              children: [
-                                if (_indexList == 0)
-                                  const Text(
-                                    'Você é um GÊNIO, acertou de primeira!',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
-                                if (_indexList == 1)
-                                  const Text(
-                                    'Uau você foi incrível, acertou na segunda tentativa!',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
-                                if (_indexList == 2)
-                                  const Text(
-                                    'Uau você foi muito bem, acertou na terceira tentativa!',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
-                                if (_indexList == 3)
-                                  const Text(
-                                    'Muito bom, acertou na quarta tentativa!',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
-                                if (_indexList == 4)
-                                  const Text(
-                                    'Passou rastando eim rs, acertou na quarta tetantiva!',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
-                                if (_indexList == 5)
-                                  const Text(
-                                    'Nossa quase não acreditava que você iria acertar, mas parabéns!\n Amanhã tente seu melhor',
-                                    style: TextStyle(color: Colors.white, fontSize: 20),
-                                  ),
-                                if (significadoPalavra.isNotEmpty) const SizedBox(height: 30),
-                                if (significadoPalavra.isNotEmpty)
-                                  Text('Gostaria de saber o significado da palavra de hoje?',
-                                      style: TextStyle(color: ThemeApp().primaryTextColor, fontSize: 15)),
-                                if (significadoPalavra.isNotEmpty)
-                                  TextButton(
-                                    onPressed: () => {
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) {
-                                            return AlertDialog(
-                                              backgroundColor: Colors.grey.shade800,
-                                              actions: [
-                                                TextButton(
-                                                  child: const Text('Fechar'),
-                                                  onPressed: () => Navigator.pop(context),
-                                                )
-                                              ],
-                                              title: Text(
-                                                'Significado da palavra (${_palavra.toUpperCase()})',
-                                                style: const TextStyle(color: Colors.white),
-                                              ),
-                                              content: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: significadoPalavra
-                                                    .map((e) => Text(
-                                                          e.meanings!.join('\n'),
-                                                          style: TextStyle(color: ThemeApp().primaryTextColor),
-                                                        ))
-                                                    .toList(),
-                                              ),
-                                            );
-                                          })
-                                    },
-                                    child: Text(
-                                      'Ver significado',
-                                      style: TextStyle(
-                                        color: ThemeApp().primaryTextColor,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.underline,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            actions: <Widget>[
-                              // TextButton(
-                              //   onPressed: () => Navigator.pop(context, 'Cancel'),
-                              //   child: const Text('Cancel'),
-                              // ),
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, 'Fechar'),
-                                child: const Text(
-                                  'Fechar',
-                                  style: TextStyle(color: Colors.white, fontSize: 20),
-                                ),
-                              ),
-                            ],
-                          );
-                        });
+                    showVitoria(context);
                     _finished = true;
                   } else {
                     //somente avança se não terminou o jogo
@@ -430,10 +335,8 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
         }
         if (_indexList == 6) {
           widget.controler6.submited = true;
+          showDerrota();
         }
-        // if (kDebugMode) {
-        //   print(widget.coluna);
-        // }
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 5),
@@ -477,5 +380,175 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
         ),
       ),
     );
+  }
+
+  Future showVitoria(BuildContext context) async {
+    if (!kDebugMode) {
+      setPreference(typePref.jogoFinalizadoHoje, true);
+    }
+    int pontuacao = int.tryParse(GlobalData().getPontuacao(typePontuacao: typePontuacao.values[_indexList]).first) ?? 0;
+    pontuacao++;
+    setPreferencePontuacao(typePontuacao.values[_indexList], pontuacao.toString());
+    int pontuacaoLetrasCorretas = int.tryParse(GlobalData().getPontuacao(typePontuacao: typePontuacao.letrasCorretas).first) ?? 0;
+    int pontuacaoLetrasExistentes =
+        int.tryParse(GlobalData().getPontuacao(typePontuacao: typePontuacao.letrasExistentes).first) ?? 0;
+
+    setPreferencePontuacao(typePontuacao.letrasCorretas, _letrasCorretas + pontuacaoLetrasCorretas);
+    await setPreferencePontuacao(typePontuacao.letrasExistentes, _letrasExistentes + pontuacaoLetrasExistentes);
+
+    List<String> frases = getGameData();
+
+    return showDialog<String>(
+        useSafeArea: true,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.grey.shade800,
+            content: Column(
+              // ignore: prefer_const_literals_to_create_immutables
+              children: [
+                if (_indexList == 0)
+                  const Text(
+                    'Você é um GÊNIO, acertou de primeira!',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                if (_indexList == 1)
+                  const Text(
+                    'Uau você foi incrível, acertou na segunda tentativa!',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                if (_indexList == 2)
+                  const Text(
+                    'Uau você foi muito bem, acertou na terceira tentativa!',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                if (_indexList == 3)
+                  const Text(
+                    'Muito bom, acertou na quarta tentativa!',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                if (_indexList == 4)
+                  const Text(
+                    'Passou rastando eim rs, acertou na quarta tetantiva!',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                if (_indexList == 5)
+                  const Text(
+                    'Nossa quase não acreditava que você iria acertar, mas parabéns!\n Amanhã tente seu melhor',
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                if (significadoPalavra.isNotEmpty) const SizedBox(height: 30),
+                if (significadoPalavra.isNotEmpty)
+                  Text('Gostaria de saber o significado da palavra de hoje?',
+                      style: TextStyle(color: ThemeApp().primaryTextColor, fontSize: 15)),
+                if (significadoPalavra.isNotEmpty)
+                  TextButton(
+                    onPressed: () => {
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              backgroundColor: Colors.grey.shade800,
+                              actions: [
+                                TextButton(
+                                  child: const Text('Fechar'),
+                                  onPressed: () => Navigator.pop(context),
+                                )
+                              ],
+                              title: Text(
+                                'Significado da palavra (${_palavra.toUpperCase()})',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: significadoPalavra
+                                    .map((e) => Text(
+                                          e.meanings!.join('\n'),
+                                          style: TextStyle(color: ThemeApp().primaryTextColor),
+                                        ))
+                                    .toList(),
+                              ),
+                            );
+                          })
+                    },
+                    child: Text(
+                      'Ver significado',
+                      style: TextStyle(
+                        color: ThemeApp().primaryTextColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 15),
+                ...frases
+                    .map((e) => Text(e, style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left))
+                    .toList()
+              ],
+            ),
+            actions: <Widget>[
+              // TextButton(
+              //   onPressed: () => Navigator.pop(context, 'Cancel'),
+              //   child: const Text('Cancel'),
+              // ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'Fechar'),
+                child: const Text(
+                  'Fechar',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Future showDerrota() {
+    int pontuacao = int.tryParse(GlobalData().getPontuacao(typePontuacao: typePontuacao.derrotas).first) ?? 0;
+    pontuacao++;
+    setPreferencePontuacao(typePontuacao.derrotas, pontuacao.toString());
+    if (!kDebugMode) {
+      setPreference(typePref.jogoFinalizadoHoje, true);
+    }
+
+    return showDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
+            backgroundColor: ThemeApp().backgroundColor,
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Fechar',
+                  style: TextStyle(color: ThemeApp().primaryTextColor),
+                ),
+              )
+            ],
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Hoje não foi seu dia de acertar',
+                  style: TextStyle(
+                    color: ThemeApp().primaryTextColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'Mas quem sabe amanhã?🤔',
+                  style: TextStyle(
+                    color: ThemeApp().primaryTextColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
