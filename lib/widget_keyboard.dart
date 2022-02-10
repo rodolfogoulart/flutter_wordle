@@ -344,9 +344,9 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                               //   child: const Text('Cancel'),
                               // ),
                               TextButton(
-                                onPressed: () => Navigator.pop(context, 'OK'),
+                                onPressed: () => Navigator.pop(context, 'Fechar'),
                                 child: const Text(
-                                  'OK',
+                                  'Fechar',
                                   style: TextStyle(color: Colors.white, fontSize: 20),
                                 ),
                               ),

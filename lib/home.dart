@@ -68,31 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ThemeApp().backgroundColor,
-        title: Row(
-          children: [
-            Flexible(
-                flex: 1,
-                child: IconButton(
-                    onPressed: () {
-                      showHelp();
-                    },
-                    icon: Icon(Icons.help_outline, color: ThemeApp().primaryTextColor))),
-            Flexible(
-                flex: 3,
-                child: Center(
-                  child: Text(
-                    widget.title,
-                    style: TextStyle(color: ThemeApp().primaryTextColor),
-                  ),
-                )),
-            // Flexible(
-            //   child: IconButton(
-            //       onPressed: () {
-            //         getHttp(palavra);
-            //       },
-            //       icon: Icon(Icons.help_outline, color: ThemeApp().primaryTextColor)),
-            // ),
-          ],
+        leading: IconButton(
+            onPressed: () {
+              showHelp();
+            },
+            icon: Icon(Icons.help_outline, color: ThemeApp().primaryTextColor)),
+        title: Text(
+          widget.title,
+          style: TextStyle(color: ThemeApp().primaryTextColor),
         ),
       ),
       backgroundColor: ThemeApp().backgroundColor,
@@ -174,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ContainerPalavra(
                     colorLetra: ThemeApp().keyboadSuccessColor,
                     letra: 'A',
+                    animating: false,
                   ),
                 ),
                 SizedBox(
@@ -196,6 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ContainerPalavra(
                     colorLetra: ThemeApp().keyboadSuccessColor,
                     letra: 'S',
+                    animating: false,
                   ),
                 ),
                 SizedBox(
@@ -219,6 +204,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ContainerPalavra(
                     colorLetra: ThemeApp().keyboadSuccessColor,
                     letra: 'D',
+                    animating: false,
                   ),
                 ),
                 SizedBox(
@@ -252,8 +238,8 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     var dias_jogados = prefs.getInt('dias_jogados') ?? 0;
     var jogo_finalizado_hoje = prefs.getBool('jogo_finalizado_hoje') ?? false;
-    print(dias_jogados);
-    print(jogo_finalizado_hoje);
+    // print(dias_jogados);
+    // print(jogo_finalizado_hoje);
     //
     await prefs.setInt('dias_jogados', dias_jogados);
     await prefs.setBool('jogo_finalizado_hoje', jogo_finalizado_hoje);
