@@ -58,6 +58,26 @@ class _RowPalavraState extends State<RowPalavra> {
 
   @override
   Widget build(BuildContext context) {
+    //POSSIVEL IMPLEMENTAÇÃO USANDO WidgetSpan
+    // https: //api.flutter.dev/flutter/widgets/WidgetSpan-class.html
+    // RichText(
+    //             text: TextSpan(children: [
+    //           WidgetSpan(
+    //               child: SizedBox(
+    //             width: 100,
+    //             height: 100,
+    //             child: Card(
+    //               color: ThemeApp().keyboardErrorColor,
+    //               elevation: 3,
+    //               shadowColor: ThemeApp().shadownColor,
+    //               shape: RoundedRectangleBorder(
+    //                 borderRadius: BorderRadius.circular(10),
+    //               ),
+    //               child: FittedBox(child: Center(child: Text('A'))),
+    //             ),
+    //           )),
+    //         ]))
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

@@ -291,7 +291,9 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
 
                   for (int j = 0; j < palavradigitada.length; j++) {
                     if ((palavradigitada[j] == palavradigitada[i]) & (j != i)) {
-                      listaLetrasCorretas[j] = listaLetrasCorretas[j] - 1;
+                      if (listaLetrasCorretas[j] != 999 && listaLetrasCorretas[j] != -999) {
+                        listaLetrasCorretas[j] = listaLetrasCorretas[j] - 1;
+                      }
                     }
                   }
                 } else if (!_palavra.contains(palavradigitada[i])) {
