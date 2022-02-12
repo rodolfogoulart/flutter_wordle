@@ -4,6 +4,7 @@ class ThemeApp {
   final Color backgroundColor = Colors.grey.shade800;
   final Color shadownColor = Colors.grey.shade900;
   final Color primaryTextColor = Colors.white;
+  final Color atentionTextColor = Colors.red.shade400;
 
   //
   final Color keyboardColor = Colors.blueGrey.shade600;

@@ -4,7 +4,6 @@ import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
 import 'package:flutter_wordle/widget.dart';
 import 'package:flutter_wordle/widget_keyboard.dart';
-import 'package:intl/intl.dart';
 
 ControlerRowPalavra controler1 = ControlerRowPalavra();
 ControlerRowPalavra controler2 = ControlerRowPalavra();
@@ -246,27 +245,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  // Future<void> getPreference() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   var dias_jogados = prefs.getInt('dias_jogados') ?? 0;
-  //   var jogo_finalizado_hoje = prefs.getBool('jogo_finalizado_hoje') ?? false;
-  //   var ultimo_dia_jogado = DateTime.tryParse(prefs.getString('ultimo_dia_jogado') ?? DateTime.now().toIso8601String());
-  //   //
-  //   String formattedDate = DateFormat('dd-MM-yyyy').format(ultimo_dia_jogado!);
-  //   _ultimoDiaJogado = formattedDate;
-
-  //   _diasJogados = dias_jogados;
-  //   if (formattedDate != DateFormat('dd-MM-yyyy').format(DateTime.now())) {
-  //     dias_jogados++;
-  //     jogo_finalizado_hoje = false;
-  //     ultimo_dia_jogado = DateTime.now();
-  //   }
-  //   //
-  //   await prefs.setString('ultimo_dia_jogado', ultimo_dia_jogado.toIso8601String());
-  //   await prefs.setInt('dias_jogados', dias_jogados);
-  //   await prefs.setBool('jogo_finalizado_hoje', jogo_finalizado_hoje);
-  // }
-
   Future showStatistics() async {
     List<String> frases = getGameData();
 
@@ -282,18 +260,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () => Navigator.pop(context),
               )
             ],
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: frases
-                  .map((e) => Text(e, style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left))
-                  .toList(),
-              // children: [
-              //   Text('Dias jogados: $diasJogados',
-              //       style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left),
-              //   Text('Último dia jogado: $ultimoDiaJogado',
-              //       style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left),
-              // ],
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: frases
+                    .map((e) => Text(e, style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left))
+                    .toList(),
+                // children: [
+                //   Text('Dias jogados: $diasJogados',
+                //       style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left),
+                //   Text('Último dia jogado: $ultimoDiaJogado',
+                //       style: TextStyle(color: ThemeApp().primaryTextColor), textAlign: TextAlign.left),
+                // ],
+              ),
             ),
           );
         });

@@ -94,7 +94,7 @@ Future<void> getPreference() async {
   var diasJogados = prefs.getInt('diasJogados') ?? 0;
   var jogoFinalizadoHoje = prefs.getBool('jogoFinalizadoHoje') ?? false;
   var ultimoDiaJogado = DateTime.tryParse(prefs.getString('ultimoDiaJogado') ?? DateTime.now().toIso8601String());
-  List<String> pontuacao = prefs.getStringList('pontuacao') ?? ['0', '0', '0', '0', '0', '0', '0', '0', '0'];
+  List<String> pontuacao = prefs.getStringList('pontuacao') ?? List<String>.filled(9, '0');
   //
 
   //
@@ -142,9 +142,12 @@ Future<void> setPreference(typePref type, var value, {typePontuacao? typePontuac
 
 Future<void> setPreferencePontuacao(typePontuacao type, var value) async {
   final prefs = await SharedPreferences.getInstance();
-  List<String> pontuacao = prefs.getStringList('pontuacao') ?? ['0', '0', '0', '0', '0', '0', '0', '0', '0'];
-  pontuacao[type.index] = value.toString();
-  await prefs.setStringList('pontuacao', pontuacao);
+  List<String> pontuacao = prefs.getStringList('pontuacao') ?? List<String>.filled(9, '0');
+  //se jogo foi finalizado no dia, não vai mais contar pontuação
+  if (!GlobalData._instance.getJogoFinalizadoHoje) {
+    pontuacao[type.index] = value.toString();
+    await prefs.setStringList('pontuacao', pontuacao);
+  }
   GlobalData._instance._pontuacao = pontuacao;
 }
 
@@ -157,6 +160,7 @@ List<String> getGameData() {
   List<String> frases = [
     'Dias jogados: $diasJogados',
     'Último dia jogado: $ultimoDiaJogado\n',
+    'Jogo finalizado hoje: ${jogoFinalizadoHoje ? 'Sim' : 'Não'} ',
     // 'Jogo finalizado hoje: $jogoFinalizadoHoje',
     'Pontuação:',
     'Finalizado na 1º Tentativa: ${pontuacao[0]}',
