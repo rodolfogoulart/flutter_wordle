@@ -11,6 +11,14 @@ Future<List<Dicionario>> getHttp(String palavra) async {
 
     var significados = decodedResponse.map((e) => Dicionario.fromJson(e)).toList();
     // var dicio = Dicionario.fromJson(decodedResponse.first);
+    //homenagem a minha namorada
+    if (palavra.toLowerCase() == 'linda') {
+      significados.add(Dicionario(meanings: [
+        'Linda: Excessivamente bonita; que chama a atenção pela beleza fora do comum; bela, belíssima,',
+        ' que é bom de se ouvir e/ou ver.',
+        'Linda ou melhor dizendo Amanda ❤️'
+      ]));
+    }
     return significados;
   } else {
     return [];

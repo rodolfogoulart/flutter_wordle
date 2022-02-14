@@ -1,11 +1,11 @@
 {
-    "name": "flutter_wordle",
-    "short_name": "flutter_wordle",
+    "name": "Desafio da palavra",
+    "short_name": "Desafio da palavra",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Desafio da palavra, é um jogo que te desafia a acertar uma palavra cada dia em 6 tentativas.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

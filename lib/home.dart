@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_wordle/local.data.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
@@ -12,6 +13,9 @@ ControlerRowPalavra controler4 = ControlerRowPalavra();
 ControlerRowPalavra controler5 = ControlerRowPalavra();
 ControlerRowPalavra controler6 = ControlerRowPalavra();
 String palavra = '';
+
+FocusNode _focusNode1 = FocusNode();
+ControlerKeyboard _controlerKeyboard1 = ControlerKeyboard();
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -58,62 +62,79 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: ThemeApp().backgroundColor,
-        leading: IconButton(
-            tooltip: 'Ajuda',
-            onPressed: () {
-              showHelp();
-            },
-            icon: Icon(Icons.help_outline, color: ThemeApp().primaryTextColor)),
-        title: Text(
-          widget.title,
-          style: TextStyle(color: ThemeApp().primaryTextColor),
-        ),
-        actions: [
-          IconButton(
-              tooltip: 'Estatísticas',
-              onPressed: () {
-                showStatistics();
-              },
-              icon: Icon(Icons.stacked_bar_chart, color: ThemeApp().primaryTextColor)),
-        ],
-      ),
-      backgroundColor: ThemeApp().backgroundColor,
-      body: SafeArea(
-        child: Center(
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    // color: Colors.red,
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    child: Column(
-                      children: [
-                        RowPalavra(controler: controler1),
-                        RowPalavra(controler: controler2),
-                        RowPalavra(controler: controler3),
-                        RowPalavra(controler: controler4),
-                        RowPalavra(controler: controler5),
-                        RowPalavra(controler: controler6),
-                      ],
-                    ),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(_focusNode1);
+      },
+      child: RawKeyboardListener(
+        focusNode: _focusNode1,
+        autofocus: true,
+        onKey: (event) {
+          final key = event.logicalKey;
+          if (event.isKeyPressed(key) && !event.repeat) {
+            _controlerKeyboard1.setKeyboard(event.logicalKey.keyLabel);
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: ThemeApp().backgroundColor,
+            leading: IconButton(
+                tooltip: 'Ajuda',
+                onPressed: () {
+                  showHelp();
+                },
+                icon: Icon(Icons.help_outline, color: ThemeApp().primaryTextColor)),
+            title: Text(
+              widget.title,
+              style: TextStyle(color: ThemeApp().primaryTextColor),
+            ),
+            actions: [
+              IconButton(
+                  tooltip: 'Estatísticas',
+                  onPressed: () {
+                    showStatistics();
+                  },
+                  icon: Icon(Icons.stacked_bar_chart, color: ThemeApp().primaryTextColor)),
+            ],
+          ),
+          backgroundColor: ThemeApp().backgroundColor,
+          body: SafeArea(
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        // color: Colors.red,
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Column(
+                          children: [
+                            RowPalavra(controler: controler1),
+                            RowPalavra(controler: controler2),
+                            RowPalavra(controler: controler3),
+                            RowPalavra(controler: controler4),
+                            RowPalavra(controler: controler5),
+                            RowPalavra(controler: controler6),
+                          ],
+                        ),
+                      ),
+                      //
+                      const SizedBox(height: 20),
+                      Keyboard(
+                        controler1: controler1,
+                        controler2: controler2,
+                        controler3: controler3,
+                        controler4: controler4,
+                        controler5: controler5,
+                        controler6: controler6,
+                        palavra: palavra,
+                        controlerKeyboard: _controlerKeyboard1,
+                      ),
+                    ],
                   ),
-                  //
-                  const SizedBox(height: 20),
-                  Keyboard(
-                      controler1: controler1,
-                      controler2: controler2,
-                      controler3: controler3,
-                      controler4: controler4,
-                      controler5: controler5,
-                      controler6: controler6,
-                      palavra: palavra),
-                ],
+                ),
               ),
             ),
           ),

@@ -18,9 +18,23 @@ bool isShowVitoriaActive = false;
 
 List<String> _keyboard1 = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'];
 List<String> _keyboard2 = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L' /*, 'Ç'*/];
-List<String> _keyboard3 = ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Back'];
+List<String> _keyboard3 = ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace'];
 
-class Keyboard extends StatelessWidget {
+List<ControlerLetraKeyboard> _controlerLetraKeyboard1 = [];
+List<ControlerLetraKeyboard> _controlerLetraKeyboard2 = [];
+List<ControlerLetraKeyboard> _controlerLetraKeyboard3 = [];
+
+class ControlerKeyboard extends ChangeNotifier {
+  String _keyboard = '';
+  String get keyboard => _keyboard;
+
+  void setKeyboard(String keyboard) {
+    _keyboard = keyboard;
+    notifyListeners();
+  }
+}
+
+class Keyboard extends StatefulWidget {
   final ControlerRowPalavra controler1;
   final ControlerRowPalavra controler2;
   final ControlerRowPalavra controler3;
@@ -28,6 +42,7 @@ class Keyboard extends StatelessWidget {
   final ControlerRowPalavra controler5;
   final ControlerRowPalavra controler6;
   final String palavra;
+  final ControlerKeyboard controlerKeyboard;
 
   Keyboard({
     Key? key,
@@ -38,21 +53,48 @@ class Keyboard extends StatelessWidget {
     required this.controler5,
     required this.controler6,
     required this.palavra,
-  }) : super(key: key) {
-    _palavra = palavra.toUpperCase();
+    required this.controlerKeyboard,
+  }) : super(key: key) {}
+
+  @override
+  State<Keyboard> createState() => _KeyboardState();
+}
+
+class _KeyboardState extends State<Keyboard> {
+  @override
+  void initState() {
+    _palavra = widget.palavra.toUpperCase();
     getSignificado();
+
+    for (var i = 0; i < _keyboard1.length; i++) {
+      _controlerLetraKeyboard1.add(ControlerLetraKeyboard());
+      _controlerLetraKeyboard1[i].setKey = _keyboard1[i];
+    }
+    for (var i = 0; i < _keyboard2.length; i++) {
+      _controlerLetraKeyboard2.add(ControlerLetraKeyboard());
+      _controlerLetraKeyboard2[i].setKey = _keyboard2[i];
+    }
+    for (var i = 0; i < _keyboard3.length; i++) {
+      _controlerLetraKeyboard3.add(ControlerLetraKeyboard());
+      _controlerLetraKeyboard3[i].setKey = _keyboard3[i];
+    }
+
+    widget.controlerKeyboard.addListener(() {
+      int index;
+      if (_keyboard1.contains(widget.controlerKeyboard.keyboard)) {
+        index = _keyboard1.indexOf(widget.controlerKeyboard.keyboard);
+        _controlerLetraKeyboard1[index].notityKey();
+      } else if (_keyboard2.contains(widget.controlerKeyboard.keyboard)) {
+        index = _keyboard2.indexOf(widget.controlerKeyboard.keyboard);
+        _controlerLetraKeyboard2[index].notityKey();
+      } else if (_keyboard3.contains(widget.controlerKeyboard.keyboard)) {
+        index = _keyboard3.indexOf(widget.controlerKeyboard.keyboard);
+        _controlerLetraKeyboard3[index].notityKey();
+      }
+    });
+
+    super.initState();
   }
-
-//   @override
-//   State<Keyboard> createState() => _KeyboardState();
-// }
-
-// class _KeyboardState extends State<Keyboard> {
-  // @override
-  // void initState() {
-  //   palavra = palavra.toUpperCase();
-  //   super.initState();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,45 +103,55 @@ class Keyboard extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _keyboard1.map((e) {
+            // _controlerLetraKeyboard._key = e;
+            var controler = _controlerLetraKeyboard1.where((element) => element._key == e).first;
             return LetraKeyboard(
-                letra: e,
-                coluna: _coluna,
-                controler1: controler1,
-                controler2: controler2,
-                controler3: controler3,
-                controler4: controler4,
-                controler5: controler5,
-                controler6: controler6);
+              letra: e,
+              coluna: _coluna,
+              controler1: widget.controler1,
+              controler2: widget.controler2,
+              controler3: widget.controler3,
+              controler4: widget.controler4,
+              controler5: widget.controler5,
+              controler6: widget.controler6,
+              controlerLetraKeyboard: controler,
+            );
           }).toList(),
         ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _keyboard2.map((e) {
+            var controler = _controlerLetraKeyboard2.where((element) => element._key == e).first;
             return LetraKeyboard(
-                letra: e,
-                coluna: _coluna,
-                controler1: controler1,
-                controler2: controler2,
-                controler3: controler3,
-                controler4: controler4,
-                controler5: controler5,
-                controler6: controler6);
+              letra: e,
+              coluna: _coluna,
+              controler1: widget.controler1,
+              controler2: widget.controler2,
+              controler3: widget.controler3,
+              controler4: widget.controler4,
+              controler5: widget.controler5,
+              controler6: widget.controler6,
+              controlerLetraKeyboard: controler,
+            );
           }).toList(),
         ),
         const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: _keyboard3.map((e) {
+            var controler = _controlerLetraKeyboard3.where((element) => element._key == e).first;
             return LetraKeyboard(
-                letra: e,
-                coluna: _coluna,
-                controler1: controler1,
-                controler2: controler2,
-                controler3: controler3,
-                controler4: controler4,
-                controler5: controler5,
-                controler6: controler6);
+              letra: e,
+              coluna: _coluna,
+              controler1: widget.controler1,
+              controler2: widget.controler2,
+              controler3: widget.controler3,
+              controler4: widget.controler4,
+              controler5: widget.controler5,
+              controler6: widget.controler6,
+              controlerLetraKeyboard: controler,
+            );
           }).toList(),
         ),
       ],
@@ -107,7 +159,27 @@ class Keyboard extends StatelessWidget {
   }
 
   void getSignificado() async {
-    significadoPalavra = await getHttp(palavra);
+    significadoPalavra = await getHttp(widget.palavra);
+  }
+}
+
+class ControlerLetraKeyboard extends ChangeNotifier {
+  String _key = '';
+  String get key => _key;
+  Color _color = ThemeApp().keyboardColor;
+  Color get color => _color;
+
+  void setColor(Color color) {
+    _color = color;
+    notifyListeners();
+  }
+
+  void notityKey() {
+    notifyListeners();
+  }
+
+  set setKey(String key) {
+    _key = key;
   }
 }
 
@@ -120,26 +192,53 @@ class LetraKeyboard extends StatefulWidget {
   final ControlerRowPalavra controler4;
   final ControlerRowPalavra controler5;
   final ControlerRowPalavra controler6;
+  final ControlerLetraKeyboard controlerLetraKeyboard;
 
-  const LetraKeyboard(
-      {Key? key,
-      required this.letra,
-      required this.coluna,
-      required this.controler1,
-      required this.controler2,
-      required this.controler3,
-      required this.controler4,
-      required this.controler5,
-      required this.controler6})
-      : super(key: key);
+  const LetraKeyboard({
+    Key? key,
+    required this.letra,
+    required this.coluna,
+    required this.controler1,
+    required this.controler2,
+    required this.controler3,
+    required this.controler4,
+    required this.controler5,
+    required this.controler6,
+    required this.controlerLetraKeyboard,
+  }) : super(key: key);
 
   @override
   State<LetraKeyboard> createState() => _LetraKeyboardState();
 }
 
 class _LetraKeyboardState extends State<LetraKeyboard> {
-  Color colorContainer = ThemeApp().keyboardColor;
+  late Color colorContainer = ThemeApp().keyboardColor;
   Color colorContainerShadown = ThemeApp().keyboardShadownColor;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controlerLetraKeyboard.addListener(() {
+      if (widget.controlerLetraKeyboard._key == widget.letra) {
+        var key = widget.controlerLetraKeyboard._key;
+        if (_keyboard1.contains(key.toUpperCase()) ||
+            _keyboard2.contains(key.toUpperCase()) ||
+            _keyboard3.contains(key.toUpperCase())) {
+          keyPressed(context, letra: key.toUpperCase());
+        } else {
+          if (key == 'Backspace') {
+            keyPressed(context, letra: 'Backspace');
+          } else if (key == 'Enter') {
+            keyPressed(context, letra: 'Enter');
+          }
+        }
+      }
+      if (widget.controlerLetraKeyboard.color != colorContainer) {
+        setState(() {});
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     IconData? icone;
@@ -147,7 +246,7 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
       case 'Enter':
         icone = Icons.subdirectory_arrow_left_outlined;
         break;
-      case 'Back':
+      case 'Backspace':
         icone = Icons.backspace_outlined;
         break;
       default:
@@ -155,71 +254,54 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
     }
     double? size = icone == null ? 38 : null;
     //
-    return RawKeyboardListener(
-      autofocus: true,
-      focusNode: FocusNode(),
-      onKey: (event) {
-        final key = event.logicalKey;
-        if (event.isKeyPressed(key)) {
-          if (_keyboard1.contains(key.keyLabel.toUpperCase()) ||
-              _keyboard2.contains(key.keyLabel.toUpperCase()) ||
-              _keyboard3.contains(key.keyLabel.toUpperCase())) {
-            keyPressed(context, letra: key.keyLabel.toUpperCase());
-          } else {
-            if (key.keyLabel == 'Backspace') {
-              keyPressed(context, letra: 'Back');
-            } else if (key.keyLabel == 'Enter') {
-              keyPressed(context, letra: 'Enter');
-            }
-          }
-        }
+    colorContainer = widget.controlerLetraKeyboard._color;
+    //
+
+    return InkResponse(
+      // splashColor: Colors.green.shade50,
+      // highlightColor: Colors.green.shade100,
+      containedInkWell: true,
+      onTap: () {
+        keyPressed(context, letra: widget.letra);
       },
-      child: InkResponse(
-        // splashColor: Colors.green.shade50,
-        // highlightColor: Colors.green.shade100,
-        containedInkWell: true,
-        onTap: () {
-          keyPressed(context, letra: widget.letra);
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(right: 5),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: size,
-            height: size,
-            padding: EdgeInsets.all(icone == null ? 6 : 10),
-            decoration: BoxDecoration(
-              color: colorContainer,
-              borderRadius: BorderRadius.circular(3),
-              boxShadow: [
-                BoxShadow(
-                  color: colorContainerShadown,
-                  blurRadius: 4,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Center(
-              child: icone == null
-                  ? FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        widget.letra,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 200,
-                        ),
-                      ),
-                    )
-                  : FittedBox(
-                      child: Icon(
-                        icone,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 5),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          width: size,
+          height: size,
+          padding: EdgeInsets.all(icone == null ? 6 : 10),
+          decoration: BoxDecoration(
+            color: colorContainer,
+            borderRadius: BorderRadius.circular(3),
+            boxShadow: [
+              BoxShadow(
+                color: colorContainerShadown,
+                blurRadius: 4,
+                spreadRadius: 1,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Center(
+            child: icone == null
+                ? FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      widget.letra,
+                      style: const TextStyle(
                         color: Colors.white,
-                        size: 30,
+                        fontSize: 200,
                       ),
                     ),
-            ),
+                  )
+                : FittedBox(
+                    child: Icon(
+                      icone,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
           ),
         ),
       ),
@@ -305,16 +387,27 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                 Color cor;
                 if (listaLetrasCorretas[i] == 999) {
                   cor = ThemeApp().keyboadSuccessColor;
+                  _letrasCorretas++;
                 } else if (listaLetrasCorretas[i] == -999) {
                   cor = ThemeApp().keyboardErrorColor;
                 } else {
                   if (listaLetrasCorretas[i] > 0) {
                     cor = ThemeApp().keyboardExistColor;
+                    _letrasExistentes++;
                   } else {
                     cor = ThemeApp().keyboardErrorColor;
                   }
                 }
                 colorsPalavra.add(cor);
+                //
+                var letracor = palavradigitada[i];
+                if (_keyboard1.contains(letracor)) {
+                  _controlerLetraKeyboard1.where((element) => element._key == letracor).first.setColor(cor);
+                } else if (_keyboard2.contains(letracor)) {
+                  _controlerLetraKeyboard2.where((element) => element._key == letracor).first.setColor(cor);
+                } else if (_keyboard3.contains(letracor)) {
+                  _controlerLetraKeyboard3.where((element) => element._key == letracor).first.setColor(cor);
+                }
               }
               if (_indexList == 0) {
                 widget.controler1.changeColor(colorsPalavra);
@@ -342,7 +435,7 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
           }
           break;
         }
-      case 'Back':
+      case 'Backspace':
         {
           if (!_finished) {
             // setState(() {
