@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_wordle/local.data.dart';
 import 'package:flutter_wordle/mock.dart';
 import 'package:flutter_wordle/theme.dart';
@@ -153,105 +152,107 @@ class _MyHomePageState extends State<MyHomePage> {
             style: TextStyle(
               color: ThemeApp().primaryTextColor,
             )),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RichText(
-              textAlign: TextAlign.justify,
-              text: TextSpan(children: [
-                TextSpan(
-                  text: 'Tente advinhar palavra do dia em 6 tentativas.\n'
-                      'Cada tentativa tem de ser uma palavra de 5 letras. Use o botão Enter ↵ para submeter.\n'
-                      'Depois de cada tentativa, a cor dos quadrados mudará para mostrar quão perto você esta da solução.!',
-                  style: TextStyle(
-                    color: ThemeApp().primaryTextColor,
-                  ),
-                ),
-              ]),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: ContainerPalavra(
-                    colorLetra: ThemeApp().keyboadSuccessColor,
-                    letra: 'A',
-                    animating: false,
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Text(
-                    'VERDE -> Indica que a letra esta no lugar certo.',
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              RichText(
+                textAlign: TextAlign.justify,
+                text: TextSpan(children: [
+                  TextSpan(
+                    text: 'Tente advinhar palavra do dia em 6 tentativas.\n'
+                        'Cada tentativa tem de ser uma palavra de 5 letras. Use o botão Enter ↵ para submeter.\n'
+                        'Depois de cada tentativa, a cor dos quadrados mudará para mostrar quão perto você esta da solução.!',
                     style: TextStyle(
-                      color: ThemeApp().keyboadSuccessColor,
-                      fontWeight: FontWeight.bold,
+                      color: ThemeApp().primaryTextColor,
                     ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: ContainerPalavra(
-                    colorLetra: ThemeApp().keyboardExistColor,
-                    letra: 'S',
-                    animating: false,
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Text(
-                    'AMARELO -> Indica que a letra esta no lugar errado.',
-                    style: TextStyle(
-                      color: ThemeApp().keyboardExistColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    softWrap: true,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: ContainerPalavra(
-                    colorLetra: ThemeApp().keyboardErrorColor,
-                    letra: 'D',
-                    animating: false,
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  child: Text(
-                    'VERMELHO -> Indica que a letra não existe na palavra.',
-                    style: TextStyle(
-                      color: ThemeApp().keyboardErrorColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Divider(color: ThemeApp().shadownColor),
-            Text(
-              '* Use letra C para Ç\n'
-              '* Fique atento, as palavras do desafio do dia podem possuir acento, mas o jogo desconsidera acento para melhor jogabilidade.\n'
-              '\nEsta é uma adaptação para Português do Wordle de Josh Wardle.\n',
-              style: TextStyle(
-                color: ThemeApp().primaryTextColor,
+                ]),
               ),
-              textAlign: TextAlign.justify,
-            ),
-          ],
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: ContainerPalavra(
+                      colorLetra: ThemeApp().keyboadSuccessColor,
+                      letra: 'A',
+                      animating: false,
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Text(
+                      'VERDE -> Indica que a letra esta no lugar certo.',
+                      style: TextStyle(
+                        color: ThemeApp().keyboadSuccessColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: ContainerPalavra(
+                      colorLetra: ThemeApp().keyboardExistColor,
+                      letra: 'S',
+                      animating: false,
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Text(
+                      'AMARELO -> Indica que a letra esta no lugar errado.',
+                      style: TextStyle(
+                        color: ThemeApp().keyboardExistColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      softWrap: true,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: ContainerPalavra(
+                      colorLetra: ThemeApp().keyboardErrorColor,
+                      letra: 'D',
+                      animating: false,
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: Text(
+                      'VERMELHO -> Indica que a letra não existe na palavra.',
+                      style: TextStyle(
+                        color: ThemeApp().keyboardErrorColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Divider(color: ThemeApp().shadownColor),
+              Text(
+                '* Use letra C para Ç\n'
+                '* Fique atento, as palavras do desafio do dia podem possuir acento, mas o jogo desconsidera acento para melhor jogabilidade.\n'
+                '\nEsta é uma adaptação para Português do Wordle de Josh Wardle.\n',
+                style: TextStyle(
+                  color: ThemeApp().primaryTextColor,
+                ),
+                textAlign: TextAlign.justify,
+              ),
+            ],
+          ),
         ),
         actions: <Widget>[
           TextButton(

@@ -279,7 +279,7 @@ class _LetraKeyboardState extends State<LetraKeyboard> {
                 color: colorContainerShadown,
                 blurRadius: 4,
                 spreadRadius: 1,
-                offset: const Offset(0, 2),
+                offset: const Offset(2, 2),
               ),
             ],
           ),

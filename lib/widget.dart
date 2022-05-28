@@ -134,53 +134,65 @@ class _ContainerPalavraState extends State<ContainerPalavra> {
 
     return FittedBox(
       child: Padding(
-        padding: const EdgeInsets.only(right: 5, bottom: 10),
+        padding: const EdgeInsets.only(right: 10, bottom: 15),
+        // child: AnimatedContainer(
+        //   duration: const Duration(milliseconds: 10),
+        //   curve: Curves.linear,
+        //   decoration: BoxDecoration(
+        //     boxShadow: [
+        //       BoxShadow(
+        //         color: (widget.animating ? ThemeApp().shadownColor : Colors.transparent),
+        //         blurRadius: (widget.animating ? 5 : 0),
+        //         spreadRadius: (widget.animating ? 2 : 0),
+        //         offset: const Offset(0.0, 2.0),
+        //       ),
+        //     ],
+        //   ),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 10),
-          curve: Curves.linear,
+          duration: Duration(milliseconds: (widget.animating ? 10 : 500)),
+          width: size,
+          height: size,
           decoration: BoxDecoration(
+            color: widget.colorLetra ?? ThemeApp().backgroundColor,
             boxShadow: [
               BoxShadow(
-                color: (widget.animating ? ThemeApp().shadownColor : Colors.transparent),
-                blurRadius: (widget.animating ? 5 : 0),
-                spreadRadius: (widget.animating ? 2 : 0),
-                offset: const Offset(0.0, 2.0),
+                color: ThemeApp().shadownColor,
+                blurRadius: 1,
+                spreadRadius: 1,
+                offset: const Offset(4, 5),
               ),
+              BoxShadow(
+                color: ThemeApp().shadownColor2,
+                blurRadius: 1,
+                spreadRadius: 1,
+                offset: const Offset(-3.5, -3.5),
+              ),
+              // BoxShadow(
+              //   color: Colors.grey.shade600,
+              //   blurRadius: 1,
+              //   spreadRadius: 0,
+              //   offset: const Offset(-.5, -1.5),
+              // )
             ],
+            borderRadius: BorderRadius.circular(9),
           ),
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: (widget.animating ? 10 : 500)),
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: widget.colorLetra ?? ThemeApp().backgroundColor,
-              boxShadow: [
-                BoxShadow(
-                  color: ThemeApp().shadownColor,
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                  offset: const Offset(0.0, 2.0),
-                ),
-              ],
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: widget.letra != ''
-                ? Center(
-                    child: FittedBox(
-                      child: Text(
-                        widget.letra,
-                        style: TextStyle(
-                          fontSize: 450,
-                          color: ThemeApp().primaryTextColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+          child: widget.letra != ''
+              ? Center(
+                  child: FittedBox(
+                    child: Text(
+                      widget.letra,
+                      style: TextStyle(
+                        fontSize: 450,
+                        color: ThemeApp().primaryTextColor,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  )
-                : Container(),
-          ),
+                  ),
+                )
+              : Container(),
         ),
       ),
+      // ),
     );
   }
 }
